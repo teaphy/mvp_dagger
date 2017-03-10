@@ -9,14 +9,14 @@ import com.jess.arms.di.module.ClientModule;
 import com.jess.arms.di.module.GlobeConfigModule;
 import com.jess.arms.di.module.ImageModule;
 import com.jess.arms.widget.imageloader.ImageLoader;
+import com.rrs.waterstationseller.di.module.CacheModule;
+import com.rrs.waterstationseller.di.module.ServiceModule;
+import com.rrs.waterstationseller.mvp.model.api.cache.CacheManager;
+import com.rrs.waterstationseller.mvp.model.api.service.ServiceManager;
 
 import javax.inject.Singleton;
 
 import dagger.Component;
-import me.jessyan.mvparms.demo.di.module.CacheModule;
-import me.jessyan.mvparms.demo.di.module.ServiceModule;
-import me.jessyan.mvparms.demo.mvp.model.api.cache.CacheManager;
-import me.jessyan.mvparms.demo.mvp.model.api.service.ServiceManager;
 import me.jessyan.rxerrorhandler.core.RxErrorHandler;
 import okhttp3.OkHttpClient;
 

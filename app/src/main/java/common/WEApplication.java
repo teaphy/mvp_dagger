@@ -15,9 +15,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import me.jessyan.mvparms.demo.BuildConfig;
-import me.jessyan.mvparms.demo.di.module.CacheModule;
-import me.jessyan.mvparms.demo.di.module.ServiceModule;
-import me.jessyan.mvparms.demo.mvp.model.api.Api;
+import com.rrs.waterstationseller.di.module.CacheModule;
+import com.rrs.waterstationseller.di.module.ServiceModule;
+import com.rrs.waterstationseller.mvp.model.api.Api;
 import me.jessyan.rxerrorhandler.handler.listener.ResponseErroListener;
 import okhttp3.Interceptor;
 import okhttp3.Request;
