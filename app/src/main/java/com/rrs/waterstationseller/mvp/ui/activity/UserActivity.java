@@ -49,6 +49,7 @@ public class UserActivity extends WEActivity<UserPresenter> implements UserContr
                 .userModule(new UserModule(this))
                 .build()
                 .inject(this);
+
     }
 
     @Override
