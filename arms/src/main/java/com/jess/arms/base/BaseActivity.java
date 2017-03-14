@@ -61,14 +61,20 @@ public abstract class BaseActivity<P extends Presenter> extends RxAppCompatActiv
         mApplication = (BaseApplication) getApplication();
         if (useEventBus())//如果要使用eventbus请将此方法返回true
             EventBus.getDefault().register(this);//注册到事件主线
-        setContentView(initView());
+        setContentView(getLayoutId());
         //绑定到butterknife
         mUnbinder = ButterKnife.bind(this);
         ComponentInject();//依赖注入
         initData();
+
+	    initView();
+
+	    setListener();
     }
 
-    /**
+
+
+	/**
      * 依赖注入的入口
      */
     protected abstract void ComponentInject();
@@ -114,9 +120,12 @@ public abstract class BaseActivity<P extends Presenter> extends RxAppCompatActiv
         super.onBackPressed();
     }
 
+	protected abstract int getLayoutId();
 
-    protected abstract View initView();
+	protected abstract void initView();
 
     protected abstract void initData();
+
+	protected abstract void setListener();
 
 }

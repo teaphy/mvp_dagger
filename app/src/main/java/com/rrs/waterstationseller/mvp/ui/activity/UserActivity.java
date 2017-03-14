@@ -55,16 +55,23 @@ public class UserActivity extends WEActivity<UserPresenter> implements UserContr
     }
 
     @Override
-    protected View initView() {
-        return LayoutInflater.from(this).inflate(R.layout.activity_user, null, false);
+    protected void initView() {
+
     }
 
     @Override
     protected void initData() {
         mPresenter.requestUsers(true);//打开app时自动加载列表
+
+
     }
 
-    @Override
+	@Override
+	protected void setListener() {
+
+	}
+
+	@Override
     public void onRefresh() {
         mPresenter.requestUsers(true);
     }
@@ -176,4 +183,9 @@ public class UserActivity extends WEActivity<UserPresenter> implements UserContr
         this.mRxPermissions = null;
         this.mPaginate = null;
     }
+
+	@Override
+	protected int getLayoutId() {
+		return R.layout.activity_user;
+	}
 }
