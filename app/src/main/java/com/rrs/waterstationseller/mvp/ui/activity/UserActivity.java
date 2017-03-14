@@ -15,15 +15,17 @@ import com.rrs.waterstationseller.di.component.DaggerUserComponent;
 import com.rrs.waterstationseller.di.module.UserModule;
 import com.rrs.waterstationseller.mvp.contract.UserContract;
 import com.rrs.waterstationseller.mvp.presenter.UserPresenter;
-import com.tbruyelle.rxpermissions.RxPermissions;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import butterknife.BindView;
 import common.AppComponent;
 import common.WEActivity;
+
+import io.reactivex.Flowable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Consumer;
 import me.jessyan.mvparms.demo.R;
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import timber.log.Timber;
 
 
@@ -53,16 +55,23 @@ public class UserActivity extends WEActivity<UserPresenter> implements UserContr
     }
 
     @Override
-    protected View initView() {
-        return LayoutInflater.from(this).inflate(R.layout.activity_user, null, false);
+    protected void initView() {
+
     }
 
     @Override
     protected void initData() {
         mPresenter.requestUsers(true);//打开app时自动加载列表
+
+
     }
 
-    @Override
+	@Override
+	protected void setListener() {
+
+	}
+
+	@Override
     public void onRefresh() {
         mPresenter.requestUsers(true);
     }
@@ -79,13 +88,13 @@ public class UserActivity extends WEActivity<UserPresenter> implements UserContr
     @Override
     public void showLoading() {
         Timber.tag(TAG).w("showLoading");
-        Observable.just(1)
+        Flowable.just(1)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Integer>() {
-                    @Override
-                    public void call(Integer integer) {
-                        mSwipeRefreshLayout.setRefreshing(true);
-                    }
+                .subscribe(new Consumer<Integer>() {
+	                @Override
+	                public void accept(@NonNull Integer integer) throws Exception {
+		                mSwipeRefreshLayout.setRefreshing(true);
+	                }
                 });
     }
 
@@ -174,4 +183,9 @@ public class UserActivity extends WEActivity<UserPresenter> implements UserContr
         this.mRxPermissions = null;
         this.mPaginate = null;
     }
+
+	@Override
+	protected int getLayoutId() {
+		return R.layout.activity_user;
+	}
 }

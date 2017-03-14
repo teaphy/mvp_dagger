@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.jess.arms.mvp.Presenter;
-import com.trello.rxlifecycle.components.support.RxFragment;
+import com.trello.rxlifecycle2.components.support.RxFragment;
 
 import org.simple.eventbus.EventBus;
 
@@ -30,8 +30,8 @@ public abstract class BaseFragment<P extends Presenter> extends RxFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mRootView = initView(inflater,container);
-        //绑定到butterknife
+	    mRootView = inflater.inflate(getLayoutId(), container, false);
+	    //绑定到butterknife
         mUnbinder = ButterKnife.bind(this, mRootView);
         return mRootView;
     }
@@ -43,7 +43,12 @@ public abstract class BaseFragment<P extends Presenter> extends RxFragment {
         if (useEventBus())//如果要使用eventbus请将此方法返回true
             EventBus.getDefault().register(this);//注册到事件主线
         ComponentInject();
-        initData();
+
+	    initData();
+
+	    initView();
+
+	    setListener();
     }
 
     /**
@@ -80,9 +85,13 @@ public abstract class BaseFragment<P extends Presenter> extends RxFragment {
     }
 
 
-    protected abstract View initView(LayoutInflater inflater, ViewGroup container);
+	protected abstract int getLayoutId();
 
-    protected abstract void initData();
+	protected abstract void initView();
+
+	protected abstract void initData();
+
+	protected abstract void setListener();
 
 
     /**

@@ -7,7 +7,7 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import io.rx_cache.internal.RxCache;
+import io.rx_cache2.internal.RxCache;
 
 /**
  * Created by zhiyicx on 2016/3/30.
