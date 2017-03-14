@@ -3,12 +3,14 @@ package com.rrs.waterstationseller.mvp.model.api.cache;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import io.rx_cache.DynamicKey;
-import io.rx_cache.EvictProvider;
-import io.rx_cache.LifeCache;
-import io.rx_cache.Reply;
+
 import com.rrs.waterstationseller.mvp.model.entity.User;
-import rx.Observable;
+
+import io.reactivex.Flowable;
+import io.rx_cache2.DynamicKey;
+import io.rx_cache2.EvictProvider;
+import io.rx_cache2.LifeCache;
+import io.rx_cache2.Reply;
 
 /**
  * Created by jess on 8/30/16 13:53
@@ -19,6 +21,6 @@ public interface CommonCache {
 
 
     @LifeCache(duration = 2, timeUnit = TimeUnit.MINUTES)
-    Observable<Reply<List<User>>> getUsers(Observable<List<User>> oUsers, DynamicKey idLastUserQueried, EvictProvider evictProvider);
+    Flowable<Reply<List<User>>> getUsers(Flowable<List<User>> oUsers, DynamicKey idLastUserQueried, EvictProvider evictProvider);
 
 }

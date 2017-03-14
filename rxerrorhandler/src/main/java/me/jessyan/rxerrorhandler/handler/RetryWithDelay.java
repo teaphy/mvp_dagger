@@ -2,17 +2,19 @@ package me.jessyan.rxerrorhandler.handler;
 
 import android.util.Log;
 
+
 import java.util.concurrent.TimeUnit;
 
-import rx.Observable;
-import rx.functions.Func1;
+import io.reactivex.Flowable;
+import io.reactivex.functions.Function;
+
 
 /**
  * Created by jess on 9/2/16 14:32
  * Contact with jess.yan.effort@gmail.com
  */
 public class RetryWithDelay implements
-        Func1<Observable<? extends Throwable>, Observable<?>> {
+		Function<Flowable<? extends Throwable>, Flowable<?>> {
     public final String TAG = this.getClass().getSimpleName();
     private final int maxRetries;
     private final int retryDelaySecond;
@@ -24,21 +26,22 @@ public class RetryWithDelay implements
     }
 
     @Override
-    public Observable<?> call(Observable<? extends Throwable> attempts) {
+    public Flowable<?> apply(Flowable<? extends Throwable> attempts) {
         return attempts
-                .flatMap(new Func1<Throwable, Observable<?>>() {
+                .flatMap(new Function<Throwable, Flowable<?>>() {
                     @Override
-                    public Observable<?> call(Throwable throwable) {
+                    public Flowable<?> apply(Throwable throwable) {
                         if (++retryCount <= maxRetries) {
                             // When this Observable calls onNext, the original Observable will be retried (i.e. re-subscribed).
                             Log.d(TAG, "get error, it will try after " + retryDelaySecond
                                     + " second, retry count " + retryCount);
-                            return Observable.timer(retryDelaySecond,
+                            return Flowable.timer(retryDelaySecond,
                                     TimeUnit.SECONDS);
                         }
                         // Max retries hit. Just pass the error along.
-                        return Observable.error(throwable);
+                        return Flowable.error(throwable);
                     }
                 });
     }
+
 }

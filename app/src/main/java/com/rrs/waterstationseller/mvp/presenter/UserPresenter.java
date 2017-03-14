@@ -17,12 +17,17 @@ import javax.inject.Inject;
 import com.rrs.waterstationseller.mvp.contract.UserContract;
 import com.rrs.waterstationseller.mvp.model.entity.User;
 import com.rrs.waterstationseller.mvp.ui.adapter.UserAdapter;
+
+import org.reactivestreams.Subscription;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 import me.jessyan.rxerrorhandler.core.RxErrorHandler;
 import me.jessyan.rxerrorhandler.handler.ErrorHandleSubscriber;
 import me.jessyan.rxerrorhandler.handler.RetryWithDelay;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by jess on 9/4/16 10:59
@@ -74,19 +79,19 @@ public class UserPresenter extends BasePresenter<UserContract.Model, UserContrac
         mModel.getUsers(lastUserId, isEvictCache)
                 .subscribeOn(Schedulers.io())
                 .retryWhen(new RetryWithDelay(3, 2))//遇到错误时重试,第一个参数为重试几次,第二个参数为重试的间隔
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        if (pullToRefresh)
-                            mRootView.showLoading();//显示上拉刷新的进度条
-                        else
-                            mRootView.startLoadMore();//显示下拉加载更多的进度条
-                    }
+                .doOnSubscribe(new Consumer<Subscription>() {
+	                @Override
+	                public void accept(@NonNull Subscription subscription) throws Exception {
+		                if (pullToRefresh)
+			                mRootView.showLoading();//显示上拉刷新的进度条
+		                else
+			                mRootView.startLoadMore();//显示下拉加载更多的进度条
+	                }
                 }).subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doAfterTerminate(new Action0() {
+                .doAfterTerminate(new Action() {
                     @Override
-                    public void call() {
+                    public void run() {
                         if (pullToRefresh)
                             mRootView.hideLoading();//隐藏上拉刷新的进度条
                         else
@@ -94,16 +99,16 @@ public class UserPresenter extends BasePresenter<UserContract.Model, UserContrac
                     }
                 })
                 .compose(RxUtils.<List<User>>bindToLifecycle(mRootView))//使用RXlifecycle,使subscription和activity一起销毁
-                .subscribe(new ErrorHandleSubscriber<List<User>>(mErrorHandler) {
-                    @Override
-                    public void onNext(List<User> users) {
-                        lastUserId = users.get(users.size() - 1).getId();//记录最后一个id,用于下一次请求
-                        if (pullToRefresh) mUsers.clear();//如果是上拉刷新则清空列表
-                        for (User user : users) {
-                            mUsers.add(user);
-                        }
-                        mAdapter.notifyDataSetChanged();//通知更新数据
-                    }
+                .subscribe(new Consumer<List<User>>() {
+	                @Override
+	                public void accept(@NonNull List<User> users) throws Exception {
+		                lastUserId = users.get(users.size() - 1).getId();//记录最后一个id,用于下一次请求
+		                if (pullToRefresh) mUsers.clear();//如果是上拉刷新则清空列表
+		                for (User user : users) {
+			                mUsers.add(user);
+		                }
+		                mAdapter.notifyDataSetChanged();//通知更新数据
+	                }
                 });
     }
 

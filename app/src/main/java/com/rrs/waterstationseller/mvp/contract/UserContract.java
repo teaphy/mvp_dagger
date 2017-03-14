@@ -3,12 +3,13 @@ package com.rrs.waterstationseller.mvp.contract;
 import com.jess.arms.base.DefaultAdapter;
 import com.jess.arms.mvp.BaseView;
 import com.jess.arms.mvp.IModel;
-import com.tbruyelle.rxpermissions.RxPermissions;
 
 import java.util.List;
 
 import com.rrs.waterstationseller.mvp.model.entity.User;
-import rx.Observable;
+import com.tbruyelle.rxpermissions2.RxPermissions;
+
+import io.reactivex.Flowable;
 
 /**
  * Created by jess on 9/4/16 10:47
@@ -25,6 +26,6 @@ public interface UserContract {
     }
     //Model层定义接口,外部只需关心model返回的数据,无需关心内部细节,及是否使用缓存
     interface Model extends IModel{
-        Observable<List<User>> getUsers(int lastIdQueried, boolean update);
+        Flowable<List<User>> getUsers(int lastIdQueried, boolean update);
     }
 }
